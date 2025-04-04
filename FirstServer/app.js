@@ -9,7 +9,16 @@ const server = http.createServer((req,res)=>{
     res.write('<head><title>My First Webpage</title></head>');
 
     if(req.url==='/'){
-        res.write('<body><h1>Welcome to our homepage!</h1></body>');
+        res.write('<h1>Enter your details</h1>');
+        res.write('<form action="/submit-details" method="POST">');
+        res.write('<input type="text" id="name" name="name" placeholder="Enter your name"<br><br>');
+        res.write('<label for="gender">Gender:</label>');
+        res.write('<input type="radio" id="male" name="gender" value="male">');
+        res.write('<label for="male">Male</label>');
+        res.write('<input type="radio" id="female" name="gender" value="female">');
+        res.write('<lable for="female">Female</lable><br>');
+        res.write('<button type="submit">Submit</button>');
+        res.write('</form>');
         return res.end();
     }else if(req.url==='/products'){  
         res.write('<body><h1>Check our latest collection of products!!</h1></body>');

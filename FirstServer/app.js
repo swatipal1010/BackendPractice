@@ -23,9 +23,26 @@ const server = http.createServer((req, res) => {
 
   } else if (req.url.toLowerCase() === "/submit-details" &&
         req.method == "POST") {
+    const body = [];              //Buffer to store received chunks of data
     req.on('data', (chunk)=>{     //Whenever we get a chunk of data on receiving request, console that chunk of data on screen
         console.log(chunk);       //Prints chunks of data which is not meaningful (doesn't gives the actual data passed on UI of the form created)
+        body.push(chunk);         //Store chunks in buffer to finally retrieve meaningful data out of it
     });
+
+    req.on('end',()=>{           //Event to know that we have stopped receiving chunks of data as we have received all the available chunks of data
+      const fullBody = Buffer.concat(body).toString();    //Getting entire body (meaningful data) from the buffer. Output form key-value seperated by '&' symbol
+      console.log(fullBody);
+      const params = new URLSearchParams(fullBody);       //Takes parameters(array of arrays) out of the fullBody by breaking them into key-value pairs
+
+      /* const bodyObject = {};                          //Stores key-value pair entries
+      for(const [key,value] of params.entries()){     //Receives key-value entries from the parameters one-by-one
+            bodyObject[key] = value;
+      } */
+
+      const bodyObject = Object.fromEntries(params);      //Take entries(key-value pair) from params and convert them to object
+      console.log(bodyObject);                            //Prints key-value pairs
+    });
+
     fs.writeFileSync('user.txt', 'Dummy');
     res.statusCode = 302;                 //Redirect back to the URL mentioned in Location(in this case to the root page i.e. /)
     res.setHeader('Location', '/');

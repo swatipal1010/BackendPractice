@@ -41,9 +41,9 @@ const server = http.createServer((req, res) => {
 
       const bodyObject = Object.fromEntries(params);      //Take entries(key-value pair) from params and convert them to object
       console.log(bodyObject);                            //Prints key-value pairs
+      fs.writeFileSync('user.txt', JSON.stringify(bodyObject));  //Convert the object(bodyObject) from JSON to string & store it in the file
     });
-
-    fs.writeFileSync('user.txt', 'Dummy');
+    
     res.statusCode = 302;                 //Redirect back to the URL mentioned in Location(in this case to the root page i.e. /)
     res.setHeader('Location', '/');
   }

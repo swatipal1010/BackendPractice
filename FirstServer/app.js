@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 
 const server = http.createServer((req, res) => {
-  console.log(req.url, req.method, req.headers);
+  console.log(req.url, req.method);
 
   if (req.url === '/') {
     res.setHeader('Content-Type', 'text/html');
@@ -23,8 +23,11 @@ const server = http.createServer((req, res) => {
 
   } else if (req.url.toLowerCase() === "/submit-details" &&
         req.method == "POST") {
+    req.on('data', (chunk)=>{     //Whenever we get a chunk of data on receiving request, console that chunk of data on screen
+        console.log(chunk);       //Prints chunks of data which is not meaningful (doesn't gives the actual data passed on UI of the form created)
+    });
     fs.writeFileSync('user.txt', 'Dummy');
-    res.statusCode = 302;
+    res.statusCode = 302;                 //Redirect back to the URL mentioned in Location(in this case to the root page i.e. /)
     res.setHeader('Location', '/');
   }
   res.setHeader('Content-Type', 'text/html');

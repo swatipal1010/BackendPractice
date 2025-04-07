@@ -40,18 +40,33 @@ const reqHandler = (req, res) => {
   
         const bodyObject = Object.fromEntries(params);      //Take entries(key-value pair) from params and convert them to object
         console.log(bodyObject);                            //Prints key-value pairs
-        fs.writeFileSync('user.txt', JSON.stringify(bodyObject));  //Convert the object(bodyObject) from JSON to string & store it in the file
-      });
-      
-      res.statusCode = 302;                 //Redirect back to the URL mentioned in Location(in this case to the root page i.e. /)
-      res.setHeader('Location', '/');
+        /* writeFileSync method blocks every other task execution as it occupies the main thread to perform this task makin other tasks to wait. This leads to synchronous code execution of this task. Thus we need to use asynchronous methode called writeFile.
+        // fs.writeFileSync('user.txt', JSON.stringify(bodyObject));  //Convert the object(bodyObject) from JSON to string & store it in the file */
+
+        fs.writeFile('user.txt', JSON.stringify(bodyObject), error=>{
+          console.log('Data written successfully.');
+        });
+        res.statusCode = 302;                 
+        res.setHeader('Location', '/');
+
+        return res.end();
+      });     
+
+      //Redirect back to the URL mentioned in Location(in this case to the root page i.e. /) when data is successfully written to the file. But if fails if writing into file is an asynchronous operation i.e. rediretion cannot be done before writing in file. Thus take this to above code block after writing in file is completed.
+      // res.statusCode = 302;                 
+      // res.setHeader('Location', '/');
     }
-    res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-    res.write('<head><title>Complete Coding</title></head>');
-    res.write('<body><h1>Like / Share / Subscribe</h1></body>');
-    res.write('</html>');
-    res.end();
+
+    //This code also runs before redirection to home page occurs because redirection is asynchronous and may take time for its execution. Thus we place below code in the else statement so that it only runs when no URL hit by user matches.
+    else{
+      res.setHeader('Content-Type', 'text/html');
+      res.write('<html>');
+      res.write('<head><title>Complete Coding</title></head>');
+      res.write('<body><h1>Like / Share / Subscribe</h1></body>');
+      res.write('</html>');
+      res.end();
+    }
+   
   };
 
   module.exports = reqHandler;          //Export the function to handle requests and responses by the server

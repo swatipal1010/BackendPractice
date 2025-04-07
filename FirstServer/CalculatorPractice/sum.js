@@ -9,6 +9,8 @@ const sumReqHandler = (req,res)=>{
         console.log(bodyObj);
         const result = Number(bodyObj.first) + Number(bodyObj.second);
         console.log(result);
+        //we put the response here, after we have received all the chunks of data (i.e. when retreival of data ends).
+        //If we put this response outside the request block(outside end block), due to asynchronous execution, response will execute first before all chunks of data from request is received giving undefined result for sum of numbers.
         res.setHeader('Content-Type', 'text/html');
         res.write(`
             <html>

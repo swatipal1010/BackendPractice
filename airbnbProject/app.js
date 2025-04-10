@@ -14,7 +14,7 @@ app.use((req,res,next)=>{
 
 app.use(express.urlencoded());
 app.use(userRouter);
-app.use(hostRouter);
+app.use("/host",hostRouter);
 
 app.use((req,res,next)=>{     //Handling request for pages/URLs that don't exist. This middleware shoyldn't be placed before other middlewares handling other routes. Otherwise we'll always get Page Not Found response.
   res.status(404).send(`<h1>Page Not Found.</h1>`);
